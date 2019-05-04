@@ -1,18 +1,18 @@
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { addNavigationHelpers, StackNavigator } from "react-navigation";
+import { createStackNavigator, createAppContainer } from "react-navigation";
 
 import ArchivesPage from "./components/ArchivesPage.js";
 import SearchArchivesPage from "./containers/SearchArchivesPage.js";
 import LockPage from "../components/LockPage";
 import {
     createReactNavigationReduxMiddleware,
-    createReduxBoundAddListener
+    createReduxContainer
 } from "react-navigation-redux-helpers";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-export const AppNavigator = StackNavigator(
+export const AppNavigator = createStackNavigator(
     {
         Home: { screen: ArchivesPage },
         SearchArchives: { screen: SearchArchivesPage },
@@ -34,22 +34,16 @@ export const AppNavigator = StackNavigator(
 );
 
 const middleware = createReactNavigationReduxMiddleware("root", state => state.nav);
-const addListener = createReduxBoundAddListener("root");
-
-const AppWithNavigationState = ({ dispatch, nav, screenProps }) => (
-    <AppNavigator
-        screenProps={screenProps}
-        navigation={addNavigationHelpers({ dispatch, state: nav, addListener })}
-    />
-);
+const MainNavigator = createAppContainer(AppNavigator);
+const AppWithNavigationState = createReduxContainer(MainNavigator, "root");
 
 AppWithNavigationState.propTypes = {
     dispatch: PropTypes.func.isRequired,
-    nav: PropTypes.object.isRequired
+    state: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => ({
-    nav: state.nav,
+    state: state.nav,
     screenProps: ownProps.screenProps
 });
 

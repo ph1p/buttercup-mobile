@@ -15,6 +15,8 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.reactcommunity.rnlocalize.RNLocalizePackage;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,8 +41,15 @@ public class MainApplication extends Application implements ReactApplication {
                 new ActionSheetPackage(),
                 new VectorIconsPackage(),
                 new CryptoPackage(),
-                new AutoFillPackage()
+                new AutoFillPackage(),
+                new RNGestureHandlerPackage(),
+                new AsyncStoragePackage()
             );
+        }
+
+        @Override
+        protected String getJSMainModuleName() {
+            return "index.android";
         }
     };
 

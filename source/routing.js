@@ -1,11 +1,10 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
-import { StackNavigator, addNavigationHelpers } from "react-navigation";
+import { Image, StyleSheet, Text, View, Animated, Easing } from "react-native";
+import { createStackNavigator, createAppContainer } from "react-navigation";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-// for react-navigation 1.0.0-beta.30
 import {
-    createReduxBoundAddListener,
+    createReduxContainer,
     createReactNavigationReduxMiddleware
 } from "react-navigation-redux-helpers";
 
@@ -21,7 +20,7 @@ import PopupBrowser from "./containers/PopupBrowser.js";
 import GroupsPage from "./containers/GroupsPage.js";
 import LockPage from "./components/LockPage.js";
 
-export const AppNavigator = StackNavigator(
+export const AppNavigator = createStackNavigator(
     {
         Home: { screen: ArchivesPage },
         Entry: { screen: EntryPage },
@@ -36,7 +35,16 @@ export const AppNavigator = StackNavigator(
         LockPage: { screen: LockPage }
     },
     {
-        navigationOptions: {
+        initialRouteName: "Home",
+        transitionConfig: () => ({
+            transitionSpec: {
+                duration: 0,
+                timing: Animated.timing,
+                easing: Easing.step0
+            }
+        }),
+        mode: "card",
+        defaultNavigationOptions: {
             headerTintColor: "#454545",
             headerStyle: {
                 backgroundColor: "#ffffff",
@@ -51,19 +59,16 @@ export const AppNavigator = StackNavigator(
 );
 
 const middleware = createReactNavigationReduxMiddleware("root", state => state.nav);
-const addListener = createReduxBoundAddListener("root");
-
-const AppWithNavigationState = ({ dispatch, nav }) => (
-    <AppNavigator navigation={addNavigationHelpers({ dispatch, state: nav, addListener })} />
-);
+const MainNavigator = createAppContainer(AppNavigator);
+const AppWithNavigationState = createReduxContainer(MainNavigator, "root");
 
 AppWithNavigationState.propTypes = {
     dispatch: PropTypes.func.isRequired,
-    nav: PropTypes.object.isRequired
+    state: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-    nav: state.nav
+    state: state.nav
 });
 
 export default connect(mapStateToProps)(AppWithNavigationState);

@@ -152,6 +152,8 @@ android {
 }
 
 dependencies {
+    implementation project(':@react-native-community_async-storage')
+    implementation project(':react-native-gesture-handler')
     implementation project(':react-native-localize')
     implementation project(':react-native-keychain')
     implementation project(':react-native-secure-storage')
@@ -159,6 +161,7 @@ dependencies {
     implementation project(':react-native-randombytes')
     implementation project(':@yfuks/react-native-action-sheet')
     implementation project(':react-native-vector-icons')
+    implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "com.madgag.spongycastle:prov:1.56.0.0"
     testImplementation "junit:junit:4.12"
